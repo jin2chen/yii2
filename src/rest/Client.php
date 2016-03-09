@@ -9,7 +9,7 @@ use GuzzleHttp\GuzzleHttp;
 
 /**
  * HTTP request client.
- * 
+ *
  * @author Jin Chen <jmole.chen@gmail.com>
  * @since 1.0
  */
@@ -75,7 +75,7 @@ class Client extends Component
         if ($this->_client === null) {
             $this->_client = new Client($this->clientOptions);
             $handler = $this->_client->getConfig('handler');
-            $handler->push(Middleware::mapRequest(function($request) {
+            $handler->push(Middleware::mapRequest(function ($request) {
                 $this->_restObject = new RestObject($request);
                 return $request;
             }));
@@ -147,7 +147,7 @@ class Client extends Component
             $params = [];
         }
     
-        $path = preg_replace_callback('/:(\w+)/', function($matches) use (&$params) {
+        $path = preg_replace_callback('/:(\w+)/', function ($matches) use (&$params) {
             if (isset($params[$matches[1]])) {
                 $tmp = $params[$matches[1]];
                 unset($params[$matches[1]]);
@@ -157,12 +157,12 @@ class Client extends Component
             return '';
         }, $path);
     
-            unset($params['r'], $params['_pjax']);
-            $path = trim(preg_replace('#/{2,}#', '/', $path), '/');
-            if (!empty($params)) {
-                $path .= '?' . http_build_query($params);
-            }
-    
-            return rtrim($baseUrl, '/') . '/' . rtrim($path);
+        unset($params['r'], $params['_pjax']);
+        $path = trim(preg_replace('#/{2,}#', '/', $path), '/');
+        if (!empty($params)) {
+            $path .= '?' . http_build_query($params);
+        }
+
+        return rtrim($baseUrl, '/') . '/' . rtrim($path);
     }
 }

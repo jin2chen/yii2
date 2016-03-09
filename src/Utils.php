@@ -5,7 +5,7 @@ use mole\helpers\Utils as XUtils;
 
 /**
  * Utils functions base YII framework.
- * 
+ *
  * @author Jin Chen <jmole.chen@gmail.com>
  * @since 1.0
  */
@@ -13,7 +13,7 @@ class Utils
 {
     /**
      * Create an Auto-Incrementing ID for mongodb collection.
-     * 
+     *
      * @param string $name Collection name.
      * @return integer
      */

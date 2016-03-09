@@ -6,7 +6,7 @@ use yii\db\ActiveRecord;
 
 /**
  * JSON encode for table fields.
- * 
+ *
  * @author Jin Chen <jmole.chen@gmail.com>
  * @since 1.0
  */
@@ -28,7 +28,7 @@ class MysqlJsonBehavior extends Behavior
             ActiveRecord::EVENT_AFTER_INSERT => 'out',
             ActiveRecord::EVENT_AFTER_UPDATE => 'out',
             ActiveRecord::EVENT_AFTER_FIND => 'out',
-        ]; 
+        ];
     }
     
     public function in($event)

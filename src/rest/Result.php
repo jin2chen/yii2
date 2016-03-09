@@ -9,7 +9,7 @@ use GuzzleHttp\Promise\PromiseInterface;
 
 /**
  * Handle HTTP response.
- * 
+ *
  * @author Jin Chen <jmole.chen@gmail.com>
  * @since 1.0
  */

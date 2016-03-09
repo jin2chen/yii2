@@ -3,7 +3,7 @@ namespace mole\yii;
 
 /**
  * Register promise for asynchronous processing.
- * 
+ *
  * @author Jin Chen <jmole.chen@gmail.com>
  * @since 1.0
  */
@@ -20,13 +20,13 @@ class Promise
     
     /**
      * Register function for exit.
-     * 
+     *
      * @return void
      */
     public static function register()
     {
         static::$_isRegistered = true;
-        register_shutdown_function(function() {
+        register_shutdown_function(function () {
             if (static::$_promise) {
                 if (function_exists('\fastcgi_finish_request')) {
                     \fastcgi_finish_request();
@@ -38,7 +38,7 @@ class Promise
     
     /**
      * Add promise to stacks.
-     * 
+     *
      * @param \GuzzleHttp\Promise\Promise $promise
      * @return void
      */
