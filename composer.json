@@ -9,7 +9,7 @@
     },
     "autoload": {
         "psr-4": {
-            "mole\\yii2\\": "src/"
+            "mole\\yii\\": "src/"
         }
     }
 }
