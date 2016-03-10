@@ -39,6 +39,8 @@ class ErrorHandler extends \yii\base\ErrorHandler
             $data['message'] = Response::$httpStatuses[500];
         }
         
+        $response->format = Response::FORMAT_JSON;
+        $response->data = $data;
         $response->send();
     }
 }
