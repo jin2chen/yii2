@@ -27,7 +27,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
             $response = new Response();
         }
         
-        $response->data = [
+        $data = [
             'code' => $exception->getCode(),
             'message' => $exception->getMessage()
         ];
@@ -36,6 +36,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
             $response->setStatusCode($exception->statusCode);
         } else {
             $response->setStatusCode(500);
+            $data['message'] = Response::$httpStatuses[500];
         }
         
         $response->send();
