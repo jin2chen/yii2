@@ -31,7 +31,7 @@ class Promise
                 if (function_exists('\fastcgi_finish_request')) {
                     \fastcgi_finish_request();
                 }
-                \GuzzleHttp\Promise\inspect_all(static::_promises);
+                \GuzzleHttp\Promise\inspect_all(static::$_promises);
             }
         });
     }
