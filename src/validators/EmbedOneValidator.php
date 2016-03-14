@@ -4,14 +4,21 @@ namespace mole\yii\validators;
 use Yii;
 use yii\validators\Validator;
 
+/**
+ * Validate for embedded document.
+ *
+ * @author Jin Chen <jmole.chen@gmail.com>
+ * @since 1.0
+ */
 class EmbedOneValidator extends Validator
 {
-    public $embedded;
-    
     /**
-     * @param \yii\base\Model $model
-     * @param string $attribute
-     * @throws \yii\base\InvalidConfigException
+     * @var string Embedded Model class name.
+     */
+    public $embedded;
+
+    /**
+     * @inheritdoc
      */
     public function validateAttribute($model, $attribute)
     {
@@ -19,7 +26,7 @@ class EmbedOneValidator extends Validator
             $model->addError($attribute, 'invalid data.');
             return;
         }
-        
+
         $config = [];
         if (is_string($this->embedded)) {
             $config['class'] = $this->embedded;
