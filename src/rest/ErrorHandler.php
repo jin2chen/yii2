@@ -26,19 +26,23 @@ class ErrorHandler extends \yii\base\ErrorHandler
         } else {
             $response = new Response();
         }
-        
+
         $data = [
             'code' => $exception->getCode(),
             'message' => $exception->getMessage()
         ];
-        
+
+        if ($exception instanceof ValidateException) {
+            $data['errors'] = $exception->getErrors();
+        }
+
         if ($exception instanceof HttpException) {
             $response->setStatusCode($exception->statusCode);
         } else {
             $response->setStatusCode(500);
             $data['message'] = Response::$httpStatuses[500];
         }
-        
+
         $response->format = Response::FORMAT_JSON;
         $response->data = $data;
         $response->send();
