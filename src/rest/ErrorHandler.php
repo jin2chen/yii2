@@ -3,6 +3,10 @@ namespace mole\yii\rest;
 
 use Yii;
 use yii\web\HttpException;
+use yii\web\BadRequestHttpException;
+use yii\web\NotFoundHttpException;
+use yii\web\UnauthorizedHttpException;
+use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
 /**
@@ -13,6 +17,9 @@ use yii\web\Response;
  */
 class ErrorHandler extends \yii\base\ErrorHandler
 {
+    /**
+     * @inheritdoc
+     */
     public function renderException($exception)
     {
         if (Yii::$app->has('response')) {
@@ -29,11 +36,39 @@ class ErrorHandler extends \yii\base\ErrorHandler
 
         $data = [
             'code' => $exception->getCode(),
-            'message' => $exception->getMessage()
+            'message' => $exception->getMessage(),
         ];
 
         if ($exception instanceof ValidateException) {
             $data['errors'] = $exception->getErrors();
+        } elseif ($exception instanceof BadRequestHttpException) {
+            $trace = $exception->getTrace();
+            $trace = $trace[0];
+            if (isset($trace['class']) && isset($trace['function'])) {
+                if ($trace['class'] === 'yii\web\JsonParser' && $trace['function'] === 'parse') {
+                    $data['code'] = 3900;
+                } elseif ($trace['class'] === 'yii\web\Controller' && $trace['function'] == 'beforeAction') {
+                    $data['code'] = 3901;
+                } elseif ($trace['class'] === 'yii\web\Controller' && $trace['function'] == 'bindActionParams') {
+                    $data['code'] = 3902;
+                }
+            }
+        } elseif ($exception instanceof NotFoundHttpException) {
+            $trace = $exception->getTrace();
+            $trace = $trace[0];
+            if ($trace['class'] === 'yii\web\Request' && $trace['function'] === 'resolve') {
+                $data['code'] = 3910;
+            } elseif ($trace['class'] === 'yii\web\Application' && $trace['function'] === 'handleRequest') {
+                $data['code'] = 3910;
+            }
+        } elseif ($exception instanceof UnauthorizedHttpException) {
+            if ($exception->getCode() == 0) {
+                $data['code'] = 1001;
+            }
+        } elseif ($exception instanceof ForbiddenHttpException) {
+            if ($exception->getCode() == 0) {
+                $data['code'] = 1013;
+            }
         }
 
         if ($exception instanceof HttpException) {
