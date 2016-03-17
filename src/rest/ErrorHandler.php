@@ -76,6 +76,9 @@ class ErrorHandler extends \yii\base\ErrorHandler
         } else {
             $response->setStatusCode(500);
             $data['message'] = Response::$httpStatuses[500];
+            if (YII_DEBUG) {
+                $data['trace'] = $exception->getTraceAsString();
+            }
         }
 
         $response->format = Response::FORMAT_JSON;
