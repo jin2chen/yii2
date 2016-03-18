@@ -69,6 +69,25 @@ class ErrorHandler extends \yii\base\ErrorHandler
             if ($exception->getCode() == 0) {
                 $data['code'] = 1013;
             }
+        } elseif ($exception instanceof HttpException) {
+            if ($exception->getName() == 'OAuth2') {
+                $map = [
+                    'required_token' => 1001,
+                    'invalid_token' => 1002,
+                    'expired_token' => 1003,
+                    'invalid_client' => 1004,
+                    'invalid_grant' => 1005,
+                    'invalid_request' => 1006,
+                    'invalid_uri' => 1007,
+                    'invalid_scope' => 1008,
+                    'redirect_uri_mismatch' => 1009,
+                    'insufficient_scope' => 1010,
+                    'unauthorized_client' => 1011,
+                    'malformed_token' => 1012,
+                ];
+
+                $data['code'] = isset($map[$exception->errorCode]) ? $map[$exception->errorCode] : 1099;
+            }
         }
 
         if ($exception instanceof HttpException) {
@@ -77,7 +96,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
             $response->setStatusCode(500);
             $data['message'] = Response::$httpStatuses[500];
             if (YII_DEBUG) {
-                $data['trace'] = $exception->__toString();
+                $data['trace'] = explode("\n", $exception->__toString());
             }
         }
 
