@@ -27,22 +27,22 @@ class BackendController extends Controller
      */
     public $enableCsrfValidation = false;
     /**
-     * @var string scheme file path.
+     * @var string schema file path.
      */
-    public $scheme;
+    public $schema;
 
     public function actionIndex()
     {
         $request = Yii::$app->request;
         $response = Yii::$app->response;
-        $scheme = Yii::getAlias($this->scheme);
+        $schema = Yii::getAlias($this->schema);
         if ($request->isPut) {
-            file_put_contents($scheme, $request->getRawBody());
+            file_put_contents($schema, $request->getRawBody());
             return 'OK';
         }
 
         $response->headers->set('Content-type', 'application/yaml');
         $response->format = Response::FORMAT_HTML;
-        return file_get_contents($scheme);
+        return file_get_contents($schema);
     }
 }
