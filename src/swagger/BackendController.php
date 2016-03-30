@@ -31,6 +31,17 @@ class BackendController extends Controller
      */
     public $schema;
 
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        parent::init();
+        foreach (Yii::$app->getLog()->targets as $target) {
+            $target->enabled = false;
+        }
+    }
+
     public function actionIndex()
     {
         $request = Yii::$app->request;
