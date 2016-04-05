@@ -40,7 +40,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
         ];
 
         if ($exception instanceof ValidateException) {
-            $data['errors'] = $exception->getErrors();
+            $data['fields'] = $exception->getErrors();
         } elseif ($exception instanceof BadRequestHttpException) {
             $trace = $exception->getTrace();
             $trace = $trace[0];
