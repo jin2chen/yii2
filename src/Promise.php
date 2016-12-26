@@ -16,7 +16,7 @@ class Promise
     /**
      * @var \GuzzleHttp\Promise\Promise[]
      */
-    private static $_promise = [];
+    private static $_promises = [];
 
     /**
      * Register function for exit.
@@ -27,7 +27,7 @@ class Promise
     {
         static::$_isRegistered = true;
         register_shutdown_function(function () {
-            if (static::$_promise) {
+            if (static::$_promises) {
                 if (function_exists('\fastcgi_finish_request')) {
                     \fastcgi_finish_request();
                 }
@@ -48,6 +48,6 @@ class Promise
             static::register();
         }
 
-        static::$_promise[] = $promise;
+        static::$_promises[] = $promise;
     }
 }

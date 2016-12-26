@@ -2,7 +2,6 @@
 namespace mole\yii;
 
 use Yii;
-use mole\helpers\Utils as XUtils;
 
 /**
  * Utils functions base YII framework.
@@ -35,17 +34,18 @@ class Utils
      * Encrypt data.
      *
      * @param mixed $data
+     * @param string $salt
      * @return string
      */
-    public static function encrypt($data)
+    public static function encrypt($data, $salt)
     {
         $data = Yii::$app->security
             ->encryptByKey(
                 json_encode($data, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE),
-                Yii::$app->params['cryptSalt']
+                $salt
             );
 
-        $data = XUtils::urlSafeB64Encode($data);
+        $data = static::urlSafeB64Encode($data);
         return $data;
     }
 
@@ -53,13 +53,14 @@ class Utils
      * Decrypt data.
      *
      * @param string $data
+     * @param string $salt
      * @return mixed If can't decrypt, return false.
      */
-    public static function decrypt($data)
+    public static function decrypt($data, $salt)
     {
-        $data = XUtils::urlSafeB64Decode($data);
+        $data = static::urlSafeB64Decode($data);
         $data = Yii::$app->security
-            ->decryptByKey($data, Yii::$app->params['cryptSalt']);
+            ->decryptByKey($data, $salt);
 
         if ($data === false) {
             return false;
@@ -70,31 +71,31 @@ class Utils
     }
 
     /**
-     * Remove rules of validator for some fields.
+     * Base64 encode for url safe.
      *
-     * @param array $rules rules of the Model::rules()
-     * @param array $attributes
-     * @return array
+     * @param string $data
+     * @return string
      */
-    public static function cleanRules($rules, $attributes = [])
+    public static function urlSafeB64Encode($data)
     {
-        foreach ($rules as $i => $rule) {
-            if (!is_array($rule[0])) {
-                $rule[0] = [$rule[0]];
-            }
+        $b64 = base64_encode($data);
+        $b64 = str_replace(
+            ['+', '/', '\r', '\n', '='],
+            ['-', '_'],
+            $b64
+        );
+        return $b64;
+    }
 
-            foreach ($rule[0] as $k => $attribute) {
-                if (in_array($attribute, $attributes)) {
-                    unset($rule[0][$k]);
-                }
-            }
-
-            $rule[0] = array_values($rule[0]);
-            if (empty($rule[0])) {
-                unset($rules[$i]);
-            }
-        }
-
-        return array_values($rules);
+    /**
+     * Base64 decode for url safe.
+     *
+     * @param string $b64
+     * @return string
+     */
+    public static function urlSafeB64Decode($b64)
+    {
+        $b64 = str_replace(['-', '_'], ['+', '/'], $b64);
+        return base64_decode($b64);
     }
 }

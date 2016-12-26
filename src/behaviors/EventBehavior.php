@@ -16,6 +16,9 @@ class EventBehavior extends Behavior
      */
     public $events;
 
+    /**
+     * @inheritdoc
+     */
     public function events()
     {
         return $this->events;

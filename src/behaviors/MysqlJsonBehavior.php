@@ -13,11 +13,16 @@ use yii\db\ActiveRecord;
 class MysqlJsonBehavior extends Behavior
 {
     /**
+     * @var ActiveRecord
+     */
+    public $owner;
+    /**
      * Fields list, these fields will be json encode.
      * @var array
      */
     public $attributes = [];
-    
+
+
     /**
      * @inheritdoc
      */
@@ -25,40 +30,63 @@ class MysqlJsonBehavior extends Behavior
     {
         return [
             ActiveRecord::EVENT_BEFORE_VALIDATE => 'in',
+            ActiveRecord::EVENT_AFTER_VALIDATE => 'out',
+            ActiveRecord::EVENT_BEFORE_INSERT => 'in',
             ActiveRecord::EVENT_AFTER_INSERT => 'out',
+            ActiveRecord::EVENT_BEFORE_UPDATE => 'in',
             ActiveRecord::EVENT_AFTER_UPDATE => 'out',
             ActiveRecord::EVENT_AFTER_FIND => 'out',
         ];
     }
-    
-    public function in($event)
+
+    /**
+     * Input.
+     */
+    public function in()
     {
-        static::input($this->owner, $this->attributes, $this->owner->isNewRecord);
+        static::inJson($this->owner, $this->attributes, $this->owner->isNewRecord);
     }
-    
-    public function out($event)
+
+    /**
+     * Output.
+     */
+    public function out()
     {
-        static::output($this->owner, $this->attributes, $this->owner->isNewRecord);
+        static::outJson($this->owner, $this->attributes, $this->owner->isNewRecord);
     }
-    
-    public static function input(&$model, array $attrs, $isNew = false)
+
+    /**
+     * @param ActiveRecord $model
+     * @param array $attributes
+     * @param bool $isNew
+     */
+    protected static function inJson(&$model, array $attributes, $isNew = false)
     {
-        foreach ($attrs as $attr) {
-            if ($isNew && !isset($model[$attr]) || !is_array($model[$attr])) {
-                $model[$attr] = [];
+        foreach ($attributes as $attribute) {
+            if ($isNew && !isset($model[$attribute]) || !is_array($model[$attribute])) {
+                $model[$attribute] = [];
             }
-    
-            if (isset($model[$attr])) {
-                $model[$attr] = json_encode(is_array($model[$attr]) ? $model[$attr]: [], JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE);
+
+            if (isset($model[$attribute])) {
+                $model[$attribute] = json_encode(is_array($model[$attribute]) ? $model[$attribute]: [], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
             }
         }
     }
-    
-    public static function output(&$model, array $attrs, $isNew = false)
+
+    /**
+     * @param ActiveRecord $model
+     * @param array $attributes
+     * @param bool $isNew
+     */
+    protected static function outJson(&$model, array $attributes, $isNew = false)
     {
-        foreach ($attrs as $attr) {
-            if (isset($model[$attr]) && !is_array($model[$attr])) {
-                $model[$attr] = json_decode($model[$attr], true) ?: [];
+        foreach ($attributes as $attribute) {
+            if ($isNew) {
+                // nothing
+            }
+
+            if (isset($model[$attribute]) && !is_array($model[$attribute])) {
+                $model[$attribute] = json_decode($model[$attribute], true) ?: [];
             }
         }
     }

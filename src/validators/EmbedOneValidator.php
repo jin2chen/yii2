@@ -2,6 +2,8 @@
 namespace mole\yii\validators;
 
 use Yii;
+use yii\base\InvalidConfigException;
+use yii\base\Model;
 use yii\validators\Validator;
 
 /**
@@ -13,9 +15,32 @@ use yii\validators\Validator;
 class EmbedOneValidator extends Validator
 {
     /**
-     * @var string Embedded Model class name.
+     * @var string|array|Model Embedded Model class name.
      */
     public $embedded;
+
+
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        if (is_string($this->embedded)) {
+            $embedded = Yii::createObject(['class' => $this->embedded]);
+        } elseif (is_array($this->embedded)) {
+            $embedded = Yii::createObject($this->embedded);
+        } elseif ($this->embedded instanceof Model) {
+            $embedded = $this->embedded;
+        } else {
+            $embedded = null;
+        }
+
+        $this->embedded = $embedded;
+        if (!($this->embedded instanceof Model)) {
+            throw new InvalidConfigException('EmbedOneValidator::embedded must be an array config or instance of Model.');
+        }
+
+    }
 
     /**
      * @inheritdoc
@@ -27,16 +52,11 @@ class EmbedOneValidator extends Validator
             return;
         }
 
-        $config = [];
-        if (is_string($this->embedded)) {
-            $config['class'] = $this->embedded;
-        } else {
-            $config = $this->embedded;
+        $embedded = $this->embedded;
+        $scenarios = $embedded->scenarios();
+        if (isset($scenarios[$model->scenario])) {
+            $embedded->scenario = $model->scenario;
         }
-
-        /* @var $embedded \yii\base\Model */
-        $embedded = Yii::createObject($config);
-        $embedded->scenario = $model->scenario;
         $embedded->setAttributes($model->{$attribute});
 
         if (!$embedded->validate()) {

@@ -6,7 +6,7 @@
     "license": "BSD-3-Clause",
     "require": {
         "php": ">=5.4.0",
-        "mole-chen/helpers": "dev-master"
+        "yiisoft/yii2": "~2.0.0"
     },
     "autoload": {
         "psr-4": {
