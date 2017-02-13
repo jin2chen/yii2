@@ -16,6 +16,10 @@ class ActiveRecord extends \yii\db\ActiveRecord
      */
     public static function find($find = self::FIND_UN_DELETED)
     {
+        if (static::$deleted === false) {
+            return parent::find();
+         }
+        
         if ($find === self::FIND_UN_DELETED) {
             return parent::find()->andWhere([static::$deleted => false]);
         } elseif ($find === self::FIND_DELETED) {
