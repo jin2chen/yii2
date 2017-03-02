@@ -38,7 +38,7 @@ class EmbedManyValidator extends Validator
 
         $this->embedded = $embedded;
         if (!($this->embedded instanceof Model)) {
-            throw new InvalidConfigException('EmbedOneValidator::embedded must be an array config or instance of Model.');
+            throw new InvalidConfigException('EmbedManyValidator::embedded must be an array config or instance of Model.');
         }
 
     }
