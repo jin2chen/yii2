@@ -8,9 +8,6 @@ use yii\validators\Validator;
 
 /**
  * Validate for embedded document.
- *
- * @author Jin Chen <jmole.chen@gmail.com>
- * @since 1.0
  */
 class EmbedOneValidator extends Validator
 {

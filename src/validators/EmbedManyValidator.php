@@ -9,9 +9,6 @@ use yii\validators\Validator;
 
 /**
  * Validate for embedded documents.
- *
- * @author Jin Chen <jmole.chen@gmail.com>
- * @since 1.0
  */
 class EmbedManyValidator extends Validator
 {
@@ -55,7 +52,7 @@ class EmbedManyValidator extends Validator
 
         $items = [];
         foreach ($model->{$attribute} as $i => $data) {
-            $embedded = $this->embedded;
+            $embedded = clone $this->embedded;
             $scenarios = $embedded->scenarios();
             if (isset($scenarios[$model->scenario])) {
                 $embedded->scenario = $model->scenario;
@@ -70,7 +67,7 @@ class EmbedManyValidator extends Validator
                         $model->addError($errorKey, $error);
                     }
                 }
-                return;
+                //return;
             } else {
                 $items[] = $embedded->toArray();
             }

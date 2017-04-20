@@ -2,6 +2,7 @@
 namespace mole\yii;
 
 use Yii;
+use mole\helpers\BaseUtils;
 
 /**
  * Utils functions base YII framework.
@@ -9,7 +10,7 @@ use Yii;
  * @author Jin Chen <jmole.chen@gmail.com>
  * @since 1.0
  */
-class Utils
+class Utils extends BaseUtils
 {
     /**
      * Create an Auto-Incrementing ID for mongodb collection.
@@ -68,34 +69,5 @@ class Utils
 
         $data = json_decode($data, true);
         return $data;
-    }
-
-    /**
-     * Base64 encode for url safe.
-     *
-     * @param string $data
-     * @return string
-     */
-    public static function urlSafeB64Encode($data)
-    {
-        $b64 = base64_encode($data);
-        $b64 = str_replace(
-            ['+', '/', '\r', '\n', '='],
-            ['-', '_'],
-            $b64
-        );
-        return $b64;
-    }
-
-    /**
-     * Base64 decode for url safe.
-     *
-     * @param string $b64
-     * @return string
-     */
-    public static function urlSafeB64Decode($b64)
-    {
-        $b64 = str_replace(['-', '_'], ['+', '/'], $b64);
-        return base64_decode($b64);
     }
 }
